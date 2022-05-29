@@ -1,12 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Divider } from '@mui/material';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import "./cart.css";
+// import { LoginContext } from "../context/ContextProvider";
 
 const Cart = () => {
 
   const { id } = useParams("");
   // console.log(id);
+
+  // const { account,setAccount } = useContext(LoginContext)
 
   const[inddata,setInddata]=useState([]);
   console.log(inddata);
@@ -35,6 +38,32 @@ const Cart = () => {
   }, [id]);
 
 
+//add cart function
+const addtocart = async(id) =>{
+  const checkres = await fetch(`/addcart/${id}`,{
+    method:"POST",
+    headers:{
+      Accept:"application/json",
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+      inddata
+    }),
+    credentials:"include"
+  });
+   
+const data1 = await checkres.json();
+console.log(data1 + "frontend data");
+
+if(checkres.status === 401 || !data1){
+  console.log("User Invalid");
+  alert("User invalid");
+
+}else{
+  alert("data added in your cart!")
+  // setAccount(data1);
+}
+}
 
 
   return (
@@ -45,7 +74,7 @@ const Cart = () => {
           <div className="left_cart">
             <img src={inddata.detailUrl} alt="cart_img" />
             <div className="cart_btn">
-              <button className='cart_btn1'>Add to Cart</button>
+              <button className='cart_btn1' onClick={()=>addtocart(inddata.id)}>Add to Cart</button>
               <button className='cart_btn2'>Buy Now</button>
             </div>
           </div>
